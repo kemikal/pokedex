@@ -1,22 +1,40 @@
+import printPokemonData from "./printPokemonData.js";
+
 let pokemonLista = document.getElementById("pokemonLista");
 let pokemonData = document.getElementById("pokemonData");
+let nextButton = document.getElementById("nextButton");
 
-console.log("POKEMON FTW!");
+const queryString = window.location.search;
+console.log("qs", queryString);
+const urlParams = new URLSearchParams(queryString);
 
-fetch("https://pokeapi.co/api/v2/pokemon/")
+let offset = urlParams.get("offset");
+console.log("offset", offset);
+
+fetch("https://pokeapi.co/api/v2/pokemon/?offset=" + offset)
 .then(res => res.json())
 .then(pokemon => {
     printPokemons(pokemon);
 })
 
 function printPokemons(pokemons) {
-   console.log("pokemon", pokemons); 
+
+    offset = Number(offset) + 20;
+
+    nextButton.href = "?offset=" + offset;
+
+  // console.log("pokemon", pokemons); 
 
    pokemons.results.map(pokemon => {
-     console.log("en pokemon", pokemon);
+    // console.log("en pokemon", pokemon);
 
      let li = document.createElement("li");
      li.innerText = pokemon.name;
+
+     li.addEventListener("click", () => {
+       //  console.log("Vi klickade på ", pokemon.name);
+        printPokemonData(pokemon.url)
+     })
 
     pokemonLista.appendChild(li)
    })
